@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emotion &amp; Takes Comparison — Gift Card Classifier</title>
+<style>
+  :root { --bg:#0f172a; --card:#1e293b; --card2:#243247; --line:#334155;
+           --txt:#e2e8f0; --dim:#94a3b8; --accent:#f472b6; --pos:#16a34a; --neg:#dc2626; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+         background:var(--bg); color:var(--txt); line-height:1.45; }
+  .wrap { max-width:1080px; margin:0 auto; padding:28px 20px 60px; }
+  h1 { font-size:22px; margin:0 0 2px; }
+  h2 { font-size:16px; color:var(--accent); margin:30px 0 12px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+  h3 { font-size:14px; margin:4px 0 10px; }
+  .sub { color:var(--dim); font-size:13px; margin-bottom:22px; }
+  .dim { color:var(--dim); font-weight:400; font-size:12px; }
+  .grid { display:grid; gap:14px; } .g4 { grid-template-columns:repeat(4,1fr); } .g2 { grid-template-columns:repeat(2,1fr); }
+  @media(max-width:720px) { .g4{grid-template-columns:repeat(2,1fr);} .g2{grid-template-columns:1fr;} }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .kpi { background:var(--card); border:1px solid var(--line); border-radius:12px; text-align:center; padding:18px 12px; }
+  .kpi .val { font-size:26px; font-weight:700; color:var(--accent); }
+  .kpi.good .val { color:var(--pos); } .kpi.low .val { color:var(--neg); }
+  .kpi .lab { color:var(--dim); font-size:11px; margin-top:4px; text-transform:uppercase; letter-spacing:.5px; }
+  .kpi .subl { font-size:11px; color:var(--dim); margin-top:2px; }
+  .bar { height:24px; background:#334155; border-radius:6px; overflow:hidden; display:flex; }
+  .seg { height:100%; }
+  .lg { display:inline-flex; align-items:center; gap:6px; margin:6px 14px 6px 0; font-size:12px; color:var(--dim); }
+  .lg i { width:10px; height:10px; border-radius:3px; display:inline-block; }
+  .donuts { display:flex; gap:14px; flex-wrap:wrap; }
+  .donutwrap { text-align:center; background:var(--card2); padding:12px; border-radius:10px; width:150px; }
+  .donutwrap svg { display:block; margin:0 auto; } .donutlabel { margin-top:-62px; font-size:13px; font-weight:700; }
+  .donuttxt { font-size:12px; margin-top:8px; } .donutsub { font-size:11px; color:var(--dim); }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
+  @media(max-width:720px) { .cards{grid-template-columns:1fr;} }
+  .ctitle { font-weight:600; font-size:13px; margin-bottom:3px; }
+  .ctext { font-size:12px; color:#cbd5e1; } .creason { font-size:11px; color:var(--dim); margin-top:6px; font-style:italic; }
+  .chips { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
+  .chip { font-size:10px; padding:2px 7px; border-radius:20px; background:#334155; }
+  .chip.positive { background:#14532d; } .chip.negative { background:#7f1d1d; }
+  .chip.llm { outline:1px solid var(--accent); } .chip.nrc { outline:1px solid #38bdf8; }
+  .chip.star { background:#78350f; } .chip.truth { background:#1e3a8a; }
+  .chip.emo { background:#3b0764; } .chip.emo2 { background:#164e63; }
+  .cm { display:grid; grid-template-columns:auto auto auto; gap:8px; }
+  .cmcell { padding:14px; text-align:center; border-radius:10px; font-size:20px; font-weight:700; }
+  .cmhead { font-size:12px; color:var(--dim); font-weight:600; display:flex; align-items:center; justify-content:center; }
+  .cmpp { background:#14532d; } .cmnn { background:#14532d; } .cmoff { background:#7f1d1d; }
+  .note { background:#1e293b; border-left:3px solid var(--accent); padding:10px 14px; border-radius:8px; font-size:13px; color:#cbd5e1; margin-top:12px; }
+  .note b { color:var(--txt); }
+</style></head><body><div class="wrap">
+
+<h1>Emotion &amp; Takes Comparison</h1>
+<div class="sub">Take 1 = LLM (prompt) · Take 2 = NRC Emotion Lexicon (rule-based) · compared against each other and the star-rating proxy</div>
+
+<div class="grid g4">
+  <div class="kpi good"><div class="val">45%</div><div class="lab">LLM↔NRC sentiment</div><div class="subl">54/119 reviews</div></div>
+  <div class="kpi low"><div class="val">20%</div><div class="lab">LLM↔NRC emotion</div><div class="subl">24/119 reviews</div></div>
+  <div class="kpi good"><div class="val">92%</div><div class="lab">LLM vs stars</div><div class="subl">109/119</div></div>
+  <div class="kpi low"><div class="val">45%</div><div class="lab">NRC vs stars</div><div class="subl">54/119</div></div>
+</div>
+
+<h2>What this tells us</h2>
+<div class="grid g2">
+  <div class="card">
+    <h3>LLM sentiment vs NRC sentiment</h3>
+    <div class="cm">
+      <div class="cmcell cmhead">LLM ↓ · NRC →</div><div class="cmcell cmhead">positive</div><div class="cmcell cmhead">negative</div>
+      <div class="cmcell cmhead">positive</div><div class="cmcell cmpp">42</div><div class="cmcell cmoff">3</div>
+      <div class="cmcell cmhead">negative</div><div class="cmcell cmoff">62</div><div class="cmcell cmnn">12</div>
+    </div>
+    <div class="dim" style="margin-top:10px">Row = LLM, column = NRC. NRC labels far more reviews "positive" (its lexicon tags neutral gift-card words as positive).</div>
+  </div>
+  <div class="card">
+    <h3>Both takes agree with stars</h3>
+    <div class="donuts" style="justify-content:space-around">
+      <div class="donutwrap">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="28" fill="none" stroke="#334155" stroke-width="12"/>
+        <circle cx="40" cy="40" r="28" fill="none" stroke="#34d399" stroke-width="12"
+            stroke-dasharray="72.4 175.9" stroke-linecap="round" transform="rotate(-90 40 40)"/>
+      </svg>
+      <div class="donutlabel">41%</div>
+      <div class="donuttxt">49 / 119</div><div class="donutsub dim">LLM + NRC both match stars</div></div>
+      <div class="donutwrap">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="28" fill="none" stroke="#334155" stroke-width="12"/>
+        <circle cx="40" cy="40" r="28" fill="none" stroke="#f472b6" stroke-width="12"
+            stroke-dasharray="79.8 175.9" stroke-linecap="round" transform="rotate(-90 40 40)"/>
+      </svg>
+      <div class="donutlabel">45%</div>
+      <div class="donuttxt">54 / 119</div><div class="donutsub dim">Sentiment agree LLM↔NRC</div></div>
+      <div class="donutwrap">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="28" fill="none" stroke="#334155" stroke-width="12"/>
+        <circle cx="40" cy="40" r="28" fill="none" stroke="#38bdf8" stroke-width="12"
+            stroke-dasharray="35.5 175.9" stroke-linecap="round" transform="rotate(-90 40 40)"/>
+      </svg>
+      <div class="donutlabel">20%</div>
+      <div class="donuttxt">24 / 119</div><div class="donutsub dim">Emotion agree LLM↔NRC</div></div>
+    </div>
+  </div>
+</div>
+
+<h2>Primary emotion — LLM take</h2>
+<div class="card"><div class="bar stacked"><div class="seg" style="width:52.1%;background:#f43f5e" title="anger: 62"></div><div class="seg" style="width:3.4%;background:#84cc16" title="disgust: 4"></div><div class="seg" style="width:29.4%;background:#fbbf24" title="joy: 35"></div><div class="seg" style="width:6.7%;background:#60a5fa" title="sadness: 8"></div><div class="seg" style="width:8.4%;background:#34d399" title="trust: 10"></div></div><div style="margin-top:10px"><span class="lg"><i style="background:#f43f5e"></i>anger <b>62</b></span><span class="lg"><i style="background:#84cc16"></i>disgust <b>4</b></span><span class="lg"><i style="background:#fbbf24"></i>joy <b>35</b></span><span class="lg"><i style="background:#60a5fa"></i>sadness <b>8</b></span><span class="lg"><i style="background:#34d399"></i>trust <b>10</b></span></div></div>
+
+<h2>Primary emotion — NRC take</h2>
+<div class="card"><div class="bar stacked"><div class="seg" style="width:28.6%;background:#f43f5e" title="anger: 34"></div><div class="seg" style="width:47.9%;background:#f59e0b" title="anticipation: 57"></div><div class="seg" style="width:3.4%;background:#a855f7" title="fear: 4"></div><div class="seg" style="width:6.7%;background:#fbbf24" title="joy: 8"></div><div class="seg" style="width:3.4%;background:#60a5fa" title="sadness: 4"></div><div class="seg" style="width:3.4%;background:#22d3ee" title="surprise: 4"></div><div class="seg" style="width:6.7%;background:#34d399" title="trust: 8"></div></div><div style="margin-top:10px"><span class="lg"><i style="background:#f43f5e"></i>anger <b>34</b></span><span class="lg"><i style="background:#f59e0b"></i>anticipation <b>57</b></span><span class="lg"><i style="background:#a855f7"></i>fear <b>4</b></span><span class="lg"><i style="background:#fbbf24"></i>joy <b>8</b></span><span class="lg"><i style="background:#60a5fa"></i>sadness <b>4</b></span><span class="lg"><i style="background:#22d3ee"></i>surprise <b>4</b></span><span class="lg"><i style="background:#34d399"></i>trust <b>8</b></span></div></div>
+
+<h2>Where LLM &amp; NRC disagree on sentiment (65 reviews)</h2>
+<div class="cards"><div class="card">
+      <div class="ctitle">Disappointed, products ?...  stick with AMAZON card and let them get what they want.</div>
+      <div class="ctext">No real choice, products all basically the same items different colors... etc</div>
+      <div class="chips"><span class="chip star">rating 1★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">sadness (LLM)</span><span class="chip emo2">trust (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer expresses disappointment with the lack of real choice in products.</div>
+    </div><div class="card">
+      <div class="ctitle">Packaging looks super old and fell apart.</div>
+      <div class="ctext">For a “gift” card this was awful. I hope the card works for the school I’m giving it too. The card holder envelope literally was disintegrating in the package.</div>
+      <div class="chips"><span class="chip star">rating 2★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">disgust (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer expresses revulsion at the disintegrating packaging of the gift card.</div>
+    </div><div class="card">
+      <div class="ctitle">Three Stars</div>
+      <div class="ctext">hard to know how to activate</div>
+      <div class="chips"><span class="chip star">rating 3★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anger (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The user expresses frustration over unclear activation instructions.</div>
+    </div><div class="card">
+      <div class="ctitle">Big dent in tin.</div>
+      <div class="ctext">This is a gift. I would prefer giving a tin that isn&#x27;t damaged.</div>
+      <div class="chips"><span class="chip star">rating 2★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer is upset about receiving a damaged tin intended as a gift.</div>
+    </div><div class="card">
+      <div class="ctitle">This is a lesson learned</div>
+      <div class="ctext">Not really sure where this item ended up I tried to update the address with ups but it appears that it ended up at the wrong address any way. So out 50.00 bucks. Lesson learned</div>
+      <div class="chips"><span class="chip star">rating 3★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer is frustrated and upset about losing $50 due to a wrong delivery address.</div>
+    </div><div class="card">
+      <div class="ctitle">Arrived bent!</div>
+      <div class="ctext">I was disappointed with this gift card purchase.  The enclosed gift envelope was bent, so I had to throw it away.  When I give a gift to someone, I want it to look brand new and not used/damaged.</div>
+      <div class="chips"><span class="chip star">rating 1★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">sadness (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The bent envelope ruined the gift&#x27;s presentation, causing disappointment.</div>
+    </div><div class="card">
+      <div class="ctitle">Needs more</div>
+      <div class="ctext">The recipient did know who the gift card was from.</div>
+      <div class="chips"><span class="chip star">rating 3★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">sadness (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The title &#x27;Needs more&#x27; expresses disappointment, and the text only offers a minor positive detail, leaving an overall dissatisfied tone.</div>
+    </div><div class="card">
+      <div class="ctitle">Not activated/ no funds available</div>
+      <div class="ctext">I gave the  card as a gift and when they tried to use the card, it is not activated and does not have funds/ balance available. At first, I did not get all 10 gift cards - it was missing 1 $100 gift c…</div>
+      <div class="chips"><span class="chip star">rating 1★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The gift cards were not activated and lacked funds, causing frustration.</div>
+    </div><div class="card">
+      <div class="ctitle">Not for friends deployed to foreign</div>
+      <div class="ctext">Great gift, but only usable in the USA, or US online stores</div>
+      <div class="chips"><span class="chip star">rating 4★</span><span class="chip truth">truth: positive</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> </div>
+    </div><div class="card">
+      <div class="ctitle">Pin not working</div>
+      <div class="ctext">Pin not working am very unhappy and I need a replacement or this to be remedied it was a Christmas gift.</div>
+      <div class="chips"><span class="chip star">rating 1★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anger (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The customer is frustrated and upset that the pin is defective and demands a replacement.</div>
+    </div><div class="card">
+      <div class="ctitle">Wont Work for Most Online Orders</div>
+      <div class="ctext">I received this gift card with hopes of using it through online merchants. However, after trying on multiple websites it continued to come back as declined. The number on the back of the card doesn’t …</div>
+      <div class="chips"><span class="chip star">rating 4★</span><span class="chip truth">truth: positive</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The card&#x27;s failure for online orders and unhelpful support clearly frustrates the reviewer.</div>
+    </div><div class="card">
+      <div class="ctitle">3 card limit on redemption</div>
+      <div class="ctext">No where did it mention this in the description on the amazon page and it does not mention it anywhere on the lane bryant site. You can only redeem 3 gift cards at a time. I can&#x27;t get into a store dur…</div>
+      <div class="chips"><span class="chip star">rating 2★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer is frustrated and angry about undisclosed gift card limits and extra shipping costs.</div>
+    </div></div>
+
+<h2>Where both agree (54 reviews) — top examples</h2>
+<div class="cards"><div class="card">
+      <div class="ctitle">Choice container for men or women.</div>
+      <div class="ctext">Nice presentation for a gift card. Speedy delivery.</div>
+      <div class="chips"><span class="chip star">rating 5★</span><span class="chip truth">truth: positive</span><span class="chip llm positive">LLM: positive</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">joy (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The review expresses satisfaction with the presentation and delivery.</div>
+    </div><div class="card">
+      <div class="ctitle">Horrible</div>
+      <div class="ctext">Absolutely horrible. The card is invalid and not usable. Why would Amazon “sell” these!!!</div>
+      <div class="chips"><span class="chip star">rating 1★</span><span class="chip truth">truth: negative</span><span class="chip llm negative">LLM: negative</span><span class="chip nrc negative">NRC: negative</span><span class="chip emo">anger (LLM)</span><span class="chip emo2">anger (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer expresses frustration and anger over receiving an invalid, unusable card.</div>
+    </div><div class="card">
+      <div class="ctitle">Easy peesy</div>
+      <div class="ctext">Easy to use.</div>
+      <div class="chips"><span class="chip star">rating 5★</span><span class="chip truth">truth: positive</span><span class="chip llm positive">LLM: positive</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">joy (LLM)</span><span class="chip emo2">anger (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The playful and satisfied tone conveys happiness with the product&#x27;s ease of use.</div>
+    </div><div class="card">
+      <div class="ctitle">Excellent gift for bookworms!</div>
+      <div class="ctext">My daughter loved it!</div>
+      <div class="chips"><span class="chip star">rating 5★</span><span class="chip truth">truth: positive</span><span class="chip llm positive">LLM: positive</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">joy (LLM)</span><span class="chip emo2">joy (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer expresses delight that their daughter loved the gift.</div>
+    </div><div class="card">
+      <div class="ctitle">Five Stars</div>
+      <div class="ctext">Grateful for the final result.</div>
+      <div class="chips"><span class="chip star">rating 5★</span><span class="chip truth">truth: positive</span><span class="chip llm positive">LLM: positive</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">joy (LLM)</span><span class="chip emo2">anticipation (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer expresses gratitude and satisfaction with the final result.</div>
+    </div><div class="card">
+      <div class="ctitle">Convenient</div>
+      <div class="ctext">Hassel free.</div>
+      <div class="chips"><span class="chip star">rating 4★</span><span class="chip truth">truth: positive</span><span class="chip llm positive">LLM: positive</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">joy (LLM)</span><span class="chip emo2">anger (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer expresses satisfaction with the product&#x27;s convenience and ease.</div>
+    </div><div class="card">
+      <div class="ctitle">Dual Use Gift Certificate a Boon to Readers</div>
+      <div class="ctext">Pretty neat and a change from the standard GC format that get tossed into recycle or trash dumps after use. The person I gave the GC to reads constantly, including digital devices. She&#x27;s using the GC …</div>
+      <div class="chips"><span class="chip star">rating 3★</span><span class="chip truth">truth: negative</span><span class="chip llm positive">LLM: positive</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">joy (LLM)</span><span class="chip emo2">trust (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The reviewer is pleased with the gift certificate and expresses hope for more designs.</div>
+    </div><div class="card">
+      <div class="ctitle">Five Stars</div>
+      <div class="ctext">They loved them</div>
+      <div class="chips"><span class="chip star">rating 5★</span><span class="chip truth">truth: positive</span><span class="chip llm positive">LLM: positive</span><span class="chip nrc positive">NRC: positive</span><span class="chip emo">joy (LLM)</span><span class="chip emo2">anger (NRC)</span></div>
+      <div class="creason"><b>LLM:</b> The review expresses satisfaction and happiness with the product.</div>
+    </div></div>
+
+<div class="note"><b>Why they diverge:</b> the NRC Emotion Lexicon was built as a general English word-association resource. In a gift-card/catalog category it tags neutral product vocabulary — <b>gift, money, balance, store, customer</b> — as "positive," so a naive word-count sentiment scores almost everything positive. The LLM reads the whole phrase and the star-vs-text relationship, making it far more sensitive to genuine complaints. Raw NRC word-sums are a weak sentiment signal in this domain (45% vs stars); they are better suited to descriptive emotional-intensity profiling than to positive/negative classification.</div>
+
+<div class="dim" style="margin-top:30px">Both takes' outputs are kept per-review in data/takes_merged.json.</div>
+</div></body></html>

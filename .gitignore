@@ -8,3 +8,12 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Scratch / practice
+python_practice
+
+# Data — NOT committed. The dashboards are self-contained (data is embedded in the
+# HTML), and the raw dataset + lexicon are large third-party files. Download them
+# and re-generate the intermediate artifacts at runtime (see README for links).
+data/*
+!data/*.html
