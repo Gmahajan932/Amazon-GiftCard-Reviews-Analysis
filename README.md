@@ -35,6 +35,41 @@ the process.
 
 ---
 
+## Dashboard screenshots
+
+The consolidated dashboard (`data/dashboard.html`) is a tabbed single-page view.
+Screenshots of each tab are committed under `screenshots/`:
+
+| Tab | Screenshot |
+|---|---|
+| 📊 **Overview** | `screenshots/dashboard_overview.png` |
+| 🔀 **Confusion & Tone** | `screenshots/dashboard_confusion.png` |
+| 🔎 **Reviews vs Model Predictions** | `screenshots/dashboard_descriptive.png` — a very tall table (120 reviews); shown here cropped |
+| ❌ **Where it went wrong** | `screenshots/dashboard_errors.png` |
+| 🔎 **LLM vs NRC Explorer** | `screenshots/dashboard_explorer.png` — a very tall table (119 reviews); shown here cropped |
+
+You can open any tab directly (and screenshot it individually) with a URL param,
+e.g. `data/dashboard.html?tab=overview`, `?tab=confusion`, `?tab=descriptive`,
+`?tab=errors`, `?tab=explorer`.
+
+![Overview](screenshots/dashboard_overview.png)
+
+![Confusion & Tone](screenshots/dashboard_confusion.png)
+
+![Where it went wrong](screenshots/dashboard_errors.png)
+
+The **Descriptive layer** (Reviews vs Model Predictions) tab shows the full
+correct-answer-vs-prediction table grouped by class, with right/wrong filtering:
+
+![Reviews vs Model Predictions](screenshots/dashboard_descriptive.png)
+
+The **LLM vs NRC Explorer** tab shows both independent takes on every review
+with full filters, sorting, and expandable rows:
+
+![LLM vs NRC Explorer](screenshots/dashboard_explorer.png)
+
+---
+
 ## 1. Why the lopsided run looked very accurate — and what sampling changed
 
 **The data is extremely one-sided.** Of the 152,410 Gift Card reviews:

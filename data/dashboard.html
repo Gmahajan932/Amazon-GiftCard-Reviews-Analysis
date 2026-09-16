@@ -683,14 +683,22 @@ document.querySelectorAll(".cmp-chip").forEach(function(c){
 renderCmp();
 
 // tab switching
+function activateTab(name){
+  document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("active"); });
+  document.querySelectorAll(".tabbody").forEach(function(b){ b.classList.remove("active"); });
+  var btn = document.querySelector('.tab[data-tab="' + name + '"]');
+  var body = document.getElementById("tab-" + name);
+  if (btn) btn.classList.add("active");
+  if (body) body.classList.add("active");
+}
 document.querySelectorAll(".tab").forEach(function(t){
-  t.addEventListener("click", function(){
-    document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("active"); });
-    document.querySelectorAll(".tabbody").forEach(function(b){ b.classList.remove("active"); });
-    t.classList.add("active");
-    document.getElementById("tab-" + t.dataset.tab).classList.add("active");
-  });
+  t.addEventListener("click", function(){ activateTab(t.dataset.tab); });
 });
+// honor ?tab=... in the URL so each tab can be bookmarked/screenshotted individually
+(function(){
+  var m = window.location.search.match(/[?&]tab=([a-z]+)/);
+  if (m) activateTab(m[1]);
+})();
 </script>
 <script>
 (function(){
